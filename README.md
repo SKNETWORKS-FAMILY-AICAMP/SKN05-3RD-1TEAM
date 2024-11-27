@@ -5,7 +5,6 @@
 |  **안태영**                         |  **황호준**                         |  **허상호**                         |  **박초연**                         |  **장정호**                         |
 | **Langchain & RAG<br>Prompt Engineering** | **Langchain & RAG<br>streamlit**                   | **Preprocessing<br>Langchain & RAG**          | **Preprocessing<br>streamlit**                   | **Preprocessing<br>README**               |
 <br>
-<br>
 
 # 🚗 운전자 보험 약관 질의응답 챗봇
 ## 📌 프로젝트 소개
