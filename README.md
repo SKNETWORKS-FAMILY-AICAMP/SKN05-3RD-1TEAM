@@ -114,20 +114,12 @@ def generate_intelligent_prompt(user_input, retrieved_texts, mode="basic"):
 ```
 
 ## 📌 할루시네이션 테스트
-질문: KB스마트운전자보험 약관에서 음주운전 사고 시 보장 여부는 어떻게 되나요?
-
-일반 LLM의 답변: 음주운전 사고와 관련된 보장 여부는 약관을 참고하시길 바랍니다.<br>
-RAG 기반 답변: KB스마트운전자보험 약관에 따르면 음주운전으로 인한 사고는 보장에서 제외됩니다.
-
-| ![codeimage](./images/gpt4mini.png) | ![pdfimage](./images/RAGgpt.png) |
+| ![gpt4mini](./images/gpt4mini.png) | ![RAGgpt](./images/RAGgpt.png) |
 |:-------------------------------------:|:-------------------------------------:|
 | GPT-4o mini  | RAG GPT-4o mini |
 
-![codeimage](./images/kbdocument.png)<br>
+![kbdocument](./images/kbdocument.png)<br>
 RAG GPT모델의 경우 본문의 내용에서 답변을 추출했음을 확인할 수 있다.
 
 ## 📌 구현화면
-q<br>
-w<br>
-e<br>
-r<br>
+![streamlit](./images/streamlit.png)
