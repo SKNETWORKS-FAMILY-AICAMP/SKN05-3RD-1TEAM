@@ -42,7 +42,8 @@ GPT-4o-mini 모델을 활용하여 검색된 문서를 기반으로 답변 생�
 ![Architecture](./images/-_-001.png)
 
 ## 📌 코드리뷰
-### 데이터 로드 및 전처리(PDF 처리 및 벡터 스토어 생성)
+데이터 로드 및 전처리(PDF 처리 및 벡터 스토어 생성)
+---
 ```python
 def load_and_split_pdf(path_ins, chunk_size=1000, chunk_overlap=200):
   ---(생략)
@@ -56,7 +57,6 @@ chunks = load_and_split_pdf(path_ins)
 
  PDF파일을 로드하고 텍스트를 줄, 공백으로 구분하여 청크로 나눈다.
  
----
 ```python
 def process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings):
     ---(생략)
@@ -65,9 +65,27 @@ def process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings):
 embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 vector_store = process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings)
 ```
-qwer
+사전 학습된 "jhgan/ko-sroberta-multitask"모델을 사용하여 한국어 문장 임베딩을 수행한다.
 
+빠르고 효율적인 검색을 위해 ChromaDB를 이용한 벡터스토어를 생성한다.
+
+RAG(Retrieval Augmented Generation) Chain 생성
 ---
+```python
+# 벡터 스토어 불러오기
+def load_vectorstore(vectorstore_name):
+    return Chroma(persist_directory=f"./data/vector_stores/{vectorstore_name}")
+
+# 리트리버 생성
+def create_retriever(vector_store):
+    # MMR: 내용의 중복을 줄이고 다양성을 제공, Similarity: 내용의 유사도를 기준으로 내용을 검색
+    return vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+
+# 대화형 리트리버 체인 생성
+def create_conversational_chain(llm, retriever):
+    # ConversationalRetrievalChain 생성
+    return ConversationalRetrievalChain.from_llm(llm, retriever)
+```
 
 ## 📌 예시
 질문: KB스마트운전자보험 약관에서 음주운전 사고 시 보장 여부는 어떻게 되나요?
