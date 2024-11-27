@@ -86,6 +86,7 @@ def create_conversational_chain(llm, retriever):
     # ConversationalRetrievalChain 생성
     return ConversationalRetrievalChain.from_llm(llm, retriever)
 ```
+![codeimage](./images/retrival.png)
 
 ## 📌 예시
 질문: KB스마트운전자보험 약관에서 음주운전 사고 시 보장 여부는 어떻게 되나요?
