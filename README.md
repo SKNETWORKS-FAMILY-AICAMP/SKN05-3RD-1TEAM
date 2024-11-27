@@ -38,7 +38,7 @@ GPT-4o-mini 모델을 활용하여 검색된 문서를 기반으로 답변 생�
 </div>
 
 ## 📌 System Architecture
-![Architecture](./images/-_-001.png)
+![Architecture](./images/architecture.png)
 
 ## 📌 코드리뷰
 데이터 로드 및 전처리(PDF 처리 및 벡터 스토어 생성)
