@@ -88,30 +88,29 @@ def create_conversational_chain(llm, retriever):
 사용자 질문 처리 함수(프롬프트 엔지니어링 등)
 ---
 ```python
-def generate_conversation_prompt(question, chat_history):
+def generate_intelligent_prompt(user_input, retrieved_texts, mode="basic"):
     """
-    대답을 하는 요령은 다음과 같이 7가지가 있으니 이를 고려하여 대답해줘.
-    1. 이전 대화를 고려하여 대답한다.
-    2. 만약 단어와 같이 짧은 입력을 받을 경우 임의로 문장을 완성해서 대답한다. 만약 입력받은 query가 '사과'일 경우 "사과의 종류는 '맥시토신', '후지', '갤릭' 등이 있습니다."와 같은 문장으로 변환한다. 이후 변환된 query에 맞는 답을 생성한다.
-    3. prompt = "보험 약관에서 다음 조건에 대한 정보를 제공해주세요:
-      - 보험금 청구 절차
-      - 보장 범위
-      - 면책 사항
-      - 계약 해지 규정"
-    4. prompt = "다음 질문에 대한 답변을 '보험 약관'에서 찾아주세요. 보험금 청구를 위한 필요한 서류와 절차는 무엇인가요?"
-    5. prompt = "보험 약관에 대하여 질문한다면 '보험 약관'과 관련된 조건을 찾고, 이를 간략하게 요약해 주세요."
-    5. prompt = "보험 약관에 대하여 질문한다면 '보험금 지급'과 관련된 조건을 찾고, 이를 간략하게 요약해 주세요."
-    6. prompt = "보험 약관의 내용을 검토하고, 보장 범위나 면책 사항에 대해 모호하거나 애매한 부분을 찾아 알려 주세요."
-    7. prompt = "보험 약관에 정의된 주요 용어들, 예를 들어 '보험금', '면책', '보장' 등을 각각 정의해주세요."
+    문서 내용과 질문을 기반으로 프롬프트를 생성합니다.
     """
+    if mode == "basic":
+        return f"질문: {user_input}\n운전자 보험 관련 답변을 제공하세요."
 
-    # 이전 대화 내용이 있을 때, 이를 반영하여 자연스러운 답변을 유도
-    if chat_history:
-        # 마지막 질문과 답변을 포함하여 답변을 생성
-        last_question, last_answer = chat_history[-1]
-        return f"이전 대화 내용을 고려하여, '{last_question}'에 대한 답변 '{last_answer}'을 바탕으로 '{question}'에 대해 대답해 주세요."
+    elif mode == "engineered":
+        if not retrieved_texts:
+            return (
+                f"문서에 관련된 정보가 없습니다. 질문에 대한 답변은 "
+                f"'관련 문서가 없습니다'라고 제공해야 합니다."
+            )
+        context = "\n".join(retrieved_texts[:3])  # 상위 3개의 문서 텍스트
+        return (
+            f"아래는 운전자 보험과 관련된 문서입니다. 문서 내용을 반드시 기반으로 "
+            f"답변을 생성하세요. 문서에 없는 내용에 대해 유추하지 마세요.\n\n"
+            f"문서 내용:\n{context}\n\n"
+            f"질문: {user_input}\n"
+            f"답변:"
+        )
     else:
-        return f"'{question}'에 대해 대답해 주세요."
+        raise ValueError("Invalid mode. Choose 'basic' or 'engineered'.")
 ```
 
 ## 📌 할루시네이션 테스트
