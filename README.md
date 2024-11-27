@@ -2,8 +2,8 @@
 
 | <img src="https://lh3.googleusercontent.com/a-/ALV-UjVorSzGodCrmHOqo72yEiWywzdzetN0vFYGzbYMAZEjW8lT3zSDjg=s100-p-k-rw-no" width="195" height="195"/> | <img src="https://lh3.googleusercontent.com/a-/ALV-UjVorSzGodCrmHOqo72yEiWywzdzetN0vFYGzbYMAZEjW8lT3zSDjg=s100-p-k-rw-no" width="195" height="195"/> | <img src="https://lh3.googleusercontent.com/a-/ALV-UjVorSzGodCrmHOqo72yEiWywzdzetN0vFYGzbYMAZEjW8lT3zSDjg=s100-p-k-rw-no" width="195" height="195"/> | <img src="https://lh3.googleusercontent.com/a-/ALV-UjVorSzGodCrmHOqo72yEiWywzdzetN0vFYGzbYMAZEjW8lT3zSDjg=s100-p-k-rw-no" width="195" height="195"/> | <img src="https://lh3.googleusercontent.com/a-/ALV-UjVorSzGodCrmHOqo72yEiWywzdzetN0vFYGzbYMAZEjW8lT3zSDjg=s100-p-k-rw-no" width="195" height="195"/> |
 |:-------------------------------------:|:-------------------------------------:|:-------------------------------------:|:-------------------------------------:|:-------------------------------------:|
-| 🐾 **안태영**                         | 🔧 **황호준**                         | 🎯 **허상호**                         | 🧠 **박초연**                         | 📄 **장정호**                         |
-| **RAG<br>Prompt Engineering** | **RAG<br>streamlit**                   | **Preprocessing<br>RAG**          | **Preprocessing<br>streamlit**                   | **Preprocessing<br>README**               |
+|  **안태영**                         |  **황호준**                         |  **허상호**                         |  **박초연**                         |  **장정호**                         |
+| **Langchain & RAG<br>Prompt Engineering** | **Langchain & RAG<br>streamlit**                   | **Preprocessing<br>Langchain & RAG**          | **Preprocessing<br>streamlit**                   | **Preprocessing<br>README**               |
 <br>
 <br>
 
@@ -35,7 +35,6 @@ GPT-4o-mini 모델을 활용하여 검색된 문서를 기반으로 답변 생�
 <img src="https://img.shields.io/badge/streamlit%20-%23FF0000.svg?style=for-the-badge&logo=streamlit&logoColor=white">
 <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
 <img src="https://github.com/user-attachments/assets/c8cd01e7-6ce6-46db-8cc3-b13286829cf3" width="163" height="28"/>
-
 </div>
 
 ## 📌 System Architecture
@@ -55,7 +54,7 @@ chunks = load_and_split_pdf(path_ins)
 | ![codeimage](./images/vscode.png) | ![pdfimage](./images/kb.png) |
 |:-------------------------------------:|:-------------------------------------:|
 
- PDF파일을 로드하고 텍스트를 줄, 공백으로 구분하여 청크로 나눈다.
+PDF파일을 로드하고 텍스트를 줄, 공백으로 구분하여 청크로 나눈다.
  
 ```python
 def process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings):
@@ -65,8 +64,7 @@ def process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings):
 embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
 vector_store = process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings)
 ```
-사전 학습된 "jhgan/ko-sroberta-multitask"모델을 사용하여 한국어 문장 임베딩을 수행한다.
-
+사전 학습된 "jhgan/ko-sroberta-multitask"모델을 사용하여 한국어 문장 임베딩을 수행한다.<br>
 빠르고 효율적인 검색을 위해 ChromaDB를 이용한 벡터스토어를 생성한다.
 
 RAG(Retrieval Augmented Generation) Chain 생성
@@ -88,20 +86,45 @@ def create_conversational_chain(llm, retriever):
 ```
 ![codeimage](./images/retrival2.png)
 
-## 📌 예시
+사용자 질문 처리 함수(프롬프트 엔지니어링 등)
+---
+```python
+def generate_conversation_prompt(question, chat_history):
+    """
+    대답을 하는 요령은 다음과 같이 7가지가 있으니 이를 고려하여 대답해줘.
+    1. 이전 대화를 고려하여 대답한다.
+    2. 만약 단어와 같이 짧은 입력을 받을 경우 임의로 문장을 완성해서 대답한다. 만약 입력받은 query가 '사과'일 경우 "사과의 종류는 '맥시토신', '후지', '갤릭' 등이 있습니다."와 같은 문장으로 변환한다. 이후 변환된 query에 맞는 답을 생성한다.
+    3. prompt = "보험 약관에서 다음 조건에 대한 정보를 제공해주세요:
+      - 보험금 청구 절차
+      - 보장 범위
+      - 면책 사항
+      - 계약 해지 규정"
+    4. prompt = "다음 질문에 대한 답변을 '보험 약관'에서 찾아주세요. 보험금 청구를 위한 필요한 서류와 절차는 무엇인가요?"
+    5. prompt = "보험 약관에 대하여 질문한다면 '보험 약관'과 관련된 조건을 찾고, 이를 간략하게 요약해 주세요."
+    5. prompt = "보험 약관에 대하여 질문한다면 '보험금 지급'과 관련된 조건을 찾고, 이를 간략하게 요약해 주세요."
+    6. prompt = "보험 약관의 내용을 검토하고, 보장 범위나 면책 사항에 대해 모호하거나 애매한 부분을 찾아 알려 주세요."
+    7. prompt = "보험 약관에 정의된 주요 용어들, 예를 들어 '보험금', '면책', '보장' 등을 각각 정의해주세요."
+    """
+
+    # 이전 대화 내용이 있을 때, 이를 반영하여 자연스러운 답변을 유도
+    if chat_history:
+        # 마지막 질문과 답변을 포함하여 답변을 생성
+        last_question, last_answer = chat_history[-1]
+        return f"이전 대화 내용을 고려하여, '{last_question}'에 대한 답변 '{last_answer}'을 바탕으로 '{question}'에 대해 대답해 주세요."
+    else:
+        return f"'{question}'에 대해 대답해 주세요."
+```
+
+## 📌 할루시네이션 테스트
 질문: KB스마트운전자보험 약관에서 음주운전 사고 시 보장 여부는 어떻게 되나요?
 
-일반 LLM의 답변: 음주운전 사고와 관련된 보장 여부는 약관을 참고하시길 바랍니다.
+일반 LLM의 답변: 음주운전 사고와 관련된 보장 여부는 약관을 참고하시길 바랍니다.<br>
 RAG 기반 답변: KB스마트운전자보험 약관에 따르면 음주운전으로 인한 사고는 보장에서 제외됩니다.
-질문: 특정 사고 유형의 보장 한도는 얼마인가요?
-
-RAG 기반 답변: 약관에 따르면, 해당 사고 유형의 보장 한도는 1억 원으로 명시되어 있습니다.
-
 
 
 
 ## 📌 구현화면
-qwer
-
-
-
+q<br>
+w<br>
+e<br>
+r<br>
