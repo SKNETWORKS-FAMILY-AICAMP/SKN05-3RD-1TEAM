@@ -41,6 +41,34 @@ GPT-4o-mini 모델을 활용하여 검색된 문서를 기반으로 답변 생�
 ## 📌 System Architecture
 ![Architecture](./images/-_-001.png)
 
+## 📌 코드리뷰
+### 데이터 로드 및 전처리(PDF 처리 및 벡터 스토어 생성)
+```python
+def load_and_split_pdf(path_ins, chunk_size=1000, chunk_overlap=200):
+  ---(생략)
+  return chunks
+
+path_ins = r"C:\Users\USER\Desktop\pjt3\kb_driver_insurance.pdf"
+chunks = load_and_split_pdf(path_ins)
+```
+| ![codeimage](./images/vscode.png) | ![pdfimage](./images/kb.png) |
+|:-------------------------------------:|:-------------------------------------:|
+
+ PDF파일을 로드하고 텍스트를 줄, 공백으로 구분하여 청크로 나눈다.
+ 
+---
+```python
+def process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings):
+    ---(생략)
+    return vector_store
+
+embeddings = HuggingFaceEmbeddings(model_name="jhgan/ko-sroberta-multitask")
+vector_store = process_pdf_to_vectorstore(vectorstore_name, chunks, embeddings)
+```
+qwer
+
+---
+
 ## 📌 예시
 질문: KB스마트운전자보험 약관에서 음주운전 사고 시 보장 여부는 어떻게 되나요?
 
@@ -50,11 +78,11 @@ RAG 기반 답변: KB스마트운전자보험 약관에 따르면 음주운전�
 
 RAG 기반 답변: 약관에 따르면, 해당 사고 유형의 보장 한도는 1억 원으로 명시되어 있습니다.
 
-## 📌 코드리뷰
-### 데이터 로드 및 전처리(PDF 처리 및 벡터 스토어 생성)
-```python
-def load_and_split_pdf(path_ins, chunk_size=1000, chunk_overlap=200):
-```
+
+
 
 ## 📌 구현화면
 qwer
+
+
+
